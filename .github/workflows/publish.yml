@@ -1,0 +1,35 @@
+name: publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'     
+        required: true
+        default: 'warning'
+      tags:
+        description: 'Manual Publish'
+        required: true
+  push:
+    branches: [ 'publish' ]
+  pull_request:
+    branches: [ 'publish' ]
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.x.x'
+
+    - name: Install dependencies
+      run: dotnet restore Mnemonic.sln
+
+    - name: Build
+      run: dotnet build Mnemonic.sln --configuration Release --no-restore
