@@ -1,12 +1,17 @@
-﻿using Mnemonic.AhoCorasick;
+﻿using Mnemonic.Strings.AhoCorasick;
+using Mnemonic.Strings.General;
+using Mnemonic.Strings.Regex;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using static Mnemonic.Utilities.Extensions.StopwatchExtensions;
 
-Console.WriteLine("Mnemonic AhoCorasick StringReplace");
+Console.WriteLine("Mnemonic StringReplace Examples");
 
 var ac = new AhoCorasickStringReplace();
+var sr = new StringReplace();
+var regex = new RegexReplace();
+
 var patterns = new Dictionary<string, string>
 {
     { "apple is red", "apple is yellow" },
@@ -24,8 +29,12 @@ var patterns = new Dictionary<string, string>
 ac.AddPatterns(patterns);
 ac.BuildFailureLinks();
 
+sr.AddPatterns(patterns);
+regex.AddPatterns(patterns);
+
 AhoStringReplace();
-StringReplace(patterns);
+StringReplace();
+RegexReplace();
 
 Console.ReadKey();
 
@@ -36,26 +45,34 @@ void AhoStringReplace()
     var output = ac.Replace(input);
     sw.Stop();
 
-    Console.WriteLine($"AhoStringReplace");
+    Console.WriteLine("AhoCorasickStringReplace");
     Console.WriteLine($"Input: {input}");
     Console.WriteLine($"Output: {output}");
     Console.WriteLine($"Elapsed: {sw.ElapsedMicroseconds():000} us");
 }
 
-void StringReplace(Dictionary<string, string> patterns)
+void StringReplace()
 {
-    Console.WriteLine($"StringReplace");
-
     var input = "My apple is red green.";
-    Console.WriteLine($"Input: {input}");
-
     var sw = Stopwatch.StartNew();
-    foreach (var kvp in patterns)
-    {
-        input = input.Replace(kvp.Key, kvp.Value);
-    }
+    var output = sr.Replace(input);
     sw.Stop();
 
-    Console.WriteLine($"Output: {input}");
+    Console.WriteLine("StringReplace");
+    Console.WriteLine($"Input: {input}");
+    Console.WriteLine($"Output: {output}");
+    Console.WriteLine($"Elapsed: {sw.ElapsedMicroseconds():000} us");
+}
+
+void RegexReplace()
+{
+    var input = "My apple is red green.";
+    var sw = Stopwatch.StartNew();
+    var output = regex.Replace(input);
+    sw.Stop();
+
+    Console.WriteLine($"Input: {input}");
+    Console.WriteLine("RegexReplace");
+    Console.WriteLine($"Output: {output}");
     Console.WriteLine($"Elapsed: {sw.ElapsedMicroseconds():000} us");
 }

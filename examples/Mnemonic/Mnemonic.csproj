@@ -6,7 +6,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\src\Mnemonic.AhoCorasick\Mnemonic.AhoCorasick.csproj" />
+		<ProjectReference Include="..\..\src\Mnemonic.Strings\Mnemonic.Strings.csproj" />
 		<ProjectReference Include="..\..\src\Mnemonic.Utilities\Mnemonic.Utilities.csproj" />
 	</ItemGroup>
 

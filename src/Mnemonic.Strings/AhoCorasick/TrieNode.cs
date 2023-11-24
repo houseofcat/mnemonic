@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Mnemonic.AhoCorasick;
+namespace Mnemonic.Strings.AhoCorasick;
 
 [DebuggerDisplay("{Key}, {Replacement}", Name = "{Key}")]
 public sealed record TrieNode

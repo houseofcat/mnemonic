@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Mnemonic.Strings.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using static Mnemonic.Utilities.Extensions.DictionaryExtensions;
 
-namespace Mnemonic.AhoCorasick;
+namespace Mnemonic.Strings.AhoCorasick;
 
-public sealed class AhoCorasickStringReplace
+public sealed class AhoCorasickStringReplace : IStringReplace
 {
     private readonly TrieNode _root = new TrieNode { IsRoot = true };
     private bool _isBuilt = false;
@@ -20,18 +21,18 @@ public sealed class AhoCorasickStringReplace
 
         foreach (var pattern in patterns)
         {
-            AddPatternInternal(pattern.Key, pattern.Value);
+            AddPatternCore(pattern.Key, pattern.Value);
         }
     }
 
-    public void AddPattern(ReadOnlySpan<char> pattern, string replacement)
+    public void AddPattern(string pattern, string replacement)
     {
         if (_isBuilt) throw new InvalidOperationException(_mustAddFirstError2);
 
-        AddPatternInternal(pattern, replacement);
+        AddPatternCore(pattern, replacement);
     }
 
-    private void AddPatternInternal(ReadOnlySpan<char> pattern, string replacement)
+    private void AddPatternCore(ReadOnlySpan<char> pattern, string replacement)
     {
         var node = _root;
 
