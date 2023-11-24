@@ -50,7 +50,6 @@ void StringReplace(Dictionary<string, string> patterns)
     Console.WriteLine($"Input: {input}");
 
     var sw = Stopwatch.StartNew();
-
     foreach (var kvp in patterns)
     {
         input = input.Replace(kvp.Key, kvp.Value);
