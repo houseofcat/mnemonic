@@ -8,14 +8,16 @@ public sealed record RegexPair
 {
     public System.Text.RegularExpressions.Regex Regex { get; private set; }
     public string Replacement { get; private set; }
+    public int Count { get; private set; }
 
-    public RegexPair(string pattern, string replacement, RegexOptions? options = null)
+    public RegexPair(string pattern, string replacement, int count = 1, RegexOptions? options = null)
     {
         Regex = new System.Text.RegularExpressions.Regex(
-            RegexHelpers.BuildRegexExactPhrasePattern(pattern),
+            RegexHelpers.BuildRegexSubstringPattern(pattern),
             options ?? RegexOptions.Singleline);
 
         Replacement = replacement;
+        Count = count;
     }
 
     public bool IsMatch(ReadOnlySpan<char> input)
@@ -25,6 +27,6 @@ public sealed record RegexPair
 
     public string Replace(string input)
     {
-        return Regex.Replace(input, Replacement);
+        return Regex.Replace(input, Replacement, Count);
     }
 }
