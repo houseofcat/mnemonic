@@ -8,10 +8,6 @@ using static Mnemonic.Utilities.Extensions.StopwatchExtensions;
 
 Console.WriteLine("Mnemonic StringReplace Examples");
 
-var ac = new AhoCorasickStringReplace();
-var sr = new StringReplace();
-var regex = new RegexReplace();
-
 var patterns = new Dictionary<string, string>
 {
     { "apple is red", "apple is yellow" },
@@ -26,12 +22,6 @@ var patterns = new Dictionary<string, string>
     { "cheese is green", "cheese has mold" }
 };
 
-ac.AddPatterns(patterns);
-ac.BuildFailureLinks();
-
-sr.AddPatterns(patterns);
-regex.AddPatterns(patterns);
-
 AhoStringReplace();
 StringReplace();
 RegexReplace();
@@ -40,6 +30,10 @@ Console.ReadKey();
 
 void AhoStringReplace()
 {
+    var ac = new AhoCorasickStringReplace();
+    ac.AddPatterns(patterns);
+    ac.BuildFailureLinks();
+
     var input = "My apple is red green.";
     var sw = Stopwatch.StartNew();
     var output = ac.Replace(input);
@@ -53,6 +47,9 @@ void AhoStringReplace()
 
 void StringReplace()
 {
+    var sr = new StringReplace();
+    sr.AddPatterns(patterns);
+
     var input = "My apple is red green.";
     var sw = Stopwatch.StartNew();
     var output = sr.Replace(input);
@@ -66,6 +63,9 @@ void StringReplace()
 
 void RegexReplace()
 {
+    var regex = new RegexReplace();
+    regex.AddPatterns(patterns);
+
     var input = "My apple is red green.";
     var sw = Stopwatch.StartNew();
     var output = regex.Replace(input);
