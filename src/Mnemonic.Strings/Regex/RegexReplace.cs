@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace Mnemonic.Strings.Regex;
 
-public class RegexReplace : IStringReplace
+public sealed class RegexReplace : IStringReplace
 {
     private readonly List<RegexPair> _patterns = new List<RegexPair>();
 
@@ -31,7 +31,7 @@ public class RegexReplace : IStringReplace
         return input;
     }
 
-    public string FindAndReplaceOnce(string input)
+    public string ReplaceOnFirstMatchOnly(string input)
     {
         foreach (var pattern in CollectionsMarshal.AsSpan(_patterns))
         {

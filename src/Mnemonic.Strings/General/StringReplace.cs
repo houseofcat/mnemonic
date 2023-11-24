@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace Mnemonic.Strings.General;
 
-public class StringReplace : IStringReplace
+public sealed class StringReplace : IStringReplace
 {
     private readonly List<StringReplacePair> _patterns = new List<StringReplacePair>();
 

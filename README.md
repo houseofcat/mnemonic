@@ -54,13 +54,13 @@ apple blue, apple red
                                                  -> [b] -> [l] -> [u] -> [e]
 ```
 
-Give the input `apple red` and this simplified tree, you would start at `root/null`,
-and iterate over each node linearly because we are matching characters. We hit the
-space (`' '`). We now have two pathways to keep traversing downards. If the next
-letter is `'r'` then we keep going down that path until we hit hopefully hit `'d'`.
-Then hitting the node containing `'d'` we see that pattern completed and thus we
-need to use this node's `replacement` property. That value is currently `apple blue`
-as the replacement.  
+Given the input `apple red` and using this simple tree, you would start at `root/null`,
+and iterate over each node linearly due to matching characters. Eventually we hit the
+space (`' '`) and have two possible branches to keep traversing downards. If the next
+letter is `'r'` then we keep going down that path until we hit hopefully hit `'d'`. Then
+hitting when we do hit the node containing `'d'` we see that `TrieNode` indicates this
+pattern has completed and use the node's `string Replacement` property. That value is
+currently `apple blue` as the replacement.  
 
 Input Examples
 ```plaintext

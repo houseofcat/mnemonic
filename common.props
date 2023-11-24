@@ -12,7 +12,7 @@
 
 		<!-- NuGet Attributes -->
 		<Authors>HouseofCat.io</Authors>
-		<Description>HouseofCat.io Mnemonic is all about efficient memory usage to solve problems.</Description>
+		<Description>HouseofCat.io Mnemonic is all about efficient ways to solve real problems.</Description>
 		<Copyright>Copyright © 2023</Copyright>
 		<Product>HouseofCat.io - Mnemonic</Product>
 		<PackageIcon>houseofcat.png</PackageIcon>
