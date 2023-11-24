@@ -1,20 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
+using static Mnemonic.Utilities.Extensions.DictionaryExtensions;
 
 namespace Mnemonic.AhoCorasick;
 
 public sealed class AhoCorasickStringReplace
 {
-    private readonly TrieNode _root = new TrieNode();
+    private readonly TrieNode _root = new TrieNode { IsRoot = true };
     private bool _isBuilt = false;
 
-    private static readonly string _mustAddFirstError = $"You can only invoke {nameof(AddPattern)} before invoking {nameof(BuildFailureLinks)}.";
+    private static readonly string _mustAddFirstError1 = $"You can only invoke {nameof(AddPatterns)} before invoking {nameof(BuildFailureLinks)}.";
+    private static readonly string _mustAddFirstError2 = $"You can only invoke {nameof(AddPattern)} before invoking {nameof(BuildFailureLinks)}.";
+
+    public void AddPatterns(Dictionary<string, string> patterns)
+    {
+        if (_isBuilt) throw new InvalidOperationException(_mustAddFirstError1);
+
+        foreach (var pattern in patterns)
+        {
+            AddPatternInternal(pattern.Key, pattern.Value);
+        }
+    }
 
     public void AddPattern(ReadOnlySpan<char> pattern, string replacement)
     {
-        if (_isBuilt) throw new InvalidOperationException(_mustBuildFirstError);
+        if (_isBuilt) throw new InvalidOperationException(_mustAddFirstError2);
 
+        AddPatternInternal(pattern, replacement);
+    }
+
+    private void AddPatternInternal(ReadOnlySpan<char> pattern, string replacement)
+    {
         var node = _root;
 
         foreach (char c in pattern)
@@ -57,28 +75,42 @@ public sealed class AhoCorasickStringReplace
         var result = new StringBuilder();
         var currentNode = _root;
         var i = 0;
+        var partialMatchIndexStart = 0;
 
         while (i < input.Length)
         {
-            if (currentNode.Children.TryGetValue(input[i], out var nextNode))
+            var currentChar = input[i];
+            DebugView("Iteration", i, currentChar, currentNode.Key, currentNode.Replacement);
+
+            if (currentNode.Children.TryGetValue(currentChar, out var nextNode))
             {
+                DebugView("PartialMatchStarted", i, currentChar, currentNode.Key, currentNode.Replacement);
                 currentNode = nextNode;
+                if (partialMatchIndexStart == 0)
+                {
+                    partialMatchIndexStart = i;
+                }
                 i++;
             }
-            else if (currentNode == _root)
+            else if (currentNode.IsRoot)
             {
-                result.Append(input[i]);
+                result.Append(currentChar);
+                partialMatchIndexStart = 0;
                 i++;
+            }
+            else if (currentNode.IsEndOfPattern)
+            {
+                DebugView("EndOfPatternFound", i, currentChar, currentNode.Key, currentNode.Replacement);
+                result.Append(currentNode.Replacement);
+                currentNode = _root;
+                partialMatchIndexStart = 0;
             }
             else
             {
+                DebugView("FailureLink", i, currentChar, currentNode.Key, currentNode.Replacement);
+                result.Append(input[partialMatchIndexStart..i]);
                 currentNode = currentNode.FailureLinkNode;
-            }
-
-            if (currentNode.IsEndOfPattern)
-            {
-                result.Append(currentNode.Replacement);
-                currentNode = _root;
+                partialMatchIndexStart = 0;
             }
         }
 
@@ -117,5 +149,15 @@ public sealed class AhoCorasickStringReplace
 
             queue.Enqueue(currentChildNode);
         }
+    }
+
+    private static readonly string _inputDetails = "InputValue: [{0}:{1}]";
+    private static readonly string _nodeDetails = "Node: [Key:{0}, Replacement:{1}]";
+
+    [Conditional("DEBUG")]
+    private static void DebugView(string action, params object[] args)
+    {
+        Console.WriteLine($"{action} - {_inputDetails}", args[0], args[1]);
+        Console.WriteLine($"{action} - {_nodeDetails}", args[2], args[3]);
     }
 }
