@@ -13,7 +13,7 @@ public sealed record RegexPair
     {
         Regex = new System.Text.RegularExpressions.Regex(
             RegexHelpers.BuildRegexExactPhrasePattern(pattern),
-            options ?? RegexOptions.Compiled);
+            options ?? RegexOptions.Singleline);
 
         Replacement = replacement;
     }

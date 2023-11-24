@@ -71,8 +71,8 @@ void RegexReplace()
     var output = regex.Replace(input);
     sw.Stop();
 
-    Console.WriteLine($"Input: {input}");
     Console.WriteLine("RegexReplace");
+    Console.WriteLine($"Input: {input}");
     Console.WriteLine($"Output: {output}");
     Console.WriteLine($"Elapsed: {sw.ElapsedMicroseconds():000} us");
 }
