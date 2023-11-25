@@ -9,11 +9,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
-		common.props = common.props
+		src\common.props = src\common.props
 		houseofcat.png = houseofcat.png
 		LICENSE = LICENSE
 		README.md = README.md
-		version.props = version.props
+		src\version.props = src\version.props
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{C0DFA67E-8FB0-4865-AE67-C817CC48EC6D}"
