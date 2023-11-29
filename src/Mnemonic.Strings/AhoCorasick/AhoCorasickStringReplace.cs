@@ -1,4 +1,5 @@
-﻿using Mnemonic.Strings.Interfaces;
+﻿using Cysharp.Text;
+using Mnemonic.Strings.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -73,10 +74,10 @@ public sealed class AhoCorasickStringReplace : IStringReplace
         if (!_isBuilt) throw new InvalidOperationException(_mustBuildFirstError);
         if (input.Length == 0) return default;
 
-        var result = new StringBuilder();
+        using var result = ZString.CreateUtf8StringBuilder();
         var currentNode = _root;
         var i = 0;
-        var partialMatchIndexStart = 0;
+        var partialMatchIndexStart = -1;
 
         while (i < input.Length)
         {
@@ -95,24 +96,27 @@ public sealed class AhoCorasickStringReplace : IStringReplace
             }
             else if (currentNode.IsRoot)
             {
+                DebugView("NoMatchFound", i, currentChar, currentNode.Key, currentNode.Replacement);
                 result.Append(currentChar);
-                partialMatchIndexStart = 0;
+                partialMatchIndexStart = -1;
                 i++;
-            }
-            else if (currentNode.IsEndOfPattern)
-            {
-                DebugView("EndOfPatternFound", i, currentChar, currentNode.Key, currentNode.Replacement);
-                result.Append(currentNode.Replacement);
-                currentNode = _root;
-                partialMatchIndexStart = 0;
             }
             else
             {
                 DebugView("FailureLink", i, currentChar, currentNode.Key, currentNode.Replacement);
                 result.Append(input[partialMatchIndexStart..i]);
                 currentNode = currentNode.FailureLinkNode;
-                partialMatchIndexStart = 0;
+                partialMatchIndexStart = -1;
             }
+
+            if (currentNode.IsEndOfPattern)
+            {
+                DebugView("EndOfPatternFound", i, currentChar, currentNode.Key, currentNode.Replacement);
+                result.Append(currentNode.Replacement);
+                currentNode = _root;
+                partialMatchIndexStart = -1;
+            }
+
         }
 
         return result.ToString();
@@ -146,6 +150,7 @@ public sealed class AhoCorasickStringReplace : IStringReplace
             if (currentChildNode.FailureLinkNode.IsEndOfPattern)
             {
                 currentChildNode.IsEndOfPattern = true;
+                currentChildNode.Replacement = currentNode.Replacement;
             }
 
             queue.Enqueue(currentChildNode);

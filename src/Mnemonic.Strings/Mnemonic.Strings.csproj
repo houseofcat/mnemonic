@@ -1,6 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<Import Project="..\common.props" />
 	<ItemGroup>
+	  <PackageReference Include="ZString" Version="2.5.1" />
+	</ItemGroup>
+	<ItemGroup>
 	  <ProjectReference Include="..\Mnemonic.Utilities\Mnemonic.Utilities.csproj" />
 	</ItemGroup>
 
