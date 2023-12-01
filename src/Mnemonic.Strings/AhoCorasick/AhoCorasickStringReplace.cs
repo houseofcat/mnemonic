@@ -3,7 +3,6 @@ using Mnemonic.Strings.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 using static Mnemonic.Utilities.Extensions.DictionaryExtensions;
 
 namespace Mnemonic.Strings.AhoCorasick;
@@ -79,31 +78,33 @@ public sealed class AhoCorasickStringReplace : IStringReplace
         var i = 0;
         var partialMatchIndexStart = -1;
 
+        DebugView("StringFindStarted", $"Input: {input}");
+
         while (i < input.Length)
         {
             var currentChar = input[i];
-            DebugView("Iteration", i, currentChar, currentNode.Key, currentNode.Replacement);
 
             if (currentNode.Children.TryGetValue(currentChar, out var nextNode))
             {
-                DebugView("PartialMatchStarted", i, currentChar, currentNode.Key, currentNode.Replacement);
+                DebugView($"{i} - ChildNodeFound", i, currentChar, currentNode.Key, currentNode.Replacement);
                 currentNode = nextNode;
-                if (partialMatchIndexStart == 0)
+                if (partialMatchIndexStart < 0)
                 {
+                    DebugView($"{i} - PatternStarted", i, currentChar, currentNode.Key, currentNode.Replacement);
                     partialMatchIndexStart = i;
                 }
                 i++;
             }
             else if (currentNode.IsRoot)
             {
-                DebugView("NoMatchFound", i, currentChar, currentNode.Key, currentNode.Replacement);
+                DebugView($"{i} - NoMatchFound", i, currentChar, currentNode.Key, currentNode.Replacement);
                 result.Append(currentChar);
                 partialMatchIndexStart = -1;
                 i++;
             }
             else
             {
-                DebugView("FailureLink", i, currentChar, currentNode.Key, currentNode.Replacement);
+                DebugView($"{i} - FailureLink", i, currentChar, currentNode.Key, currentNode.Replacement);
                 result.Append(input[partialMatchIndexStart..i]);
                 currentNode = currentNode.FailureLinkNode;
                 partialMatchIndexStart = -1;
@@ -111,7 +112,7 @@ public sealed class AhoCorasickStringReplace : IStringReplace
 
             if (currentNode.IsEndOfPattern)
             {
-                DebugView("EndOfPatternFound", i, currentChar, currentNode.Key, currentNode.Replacement);
+                DebugView($"{i} - PatternEnded", i, currentChar, currentNode.Key, currentNode.Replacement);
                 result.Append(currentNode.Replacement);
                 currentNode = _root;
                 partialMatchIndexStart = -1;
@@ -157,6 +158,12 @@ public sealed class AhoCorasickStringReplace : IStringReplace
         }
     }
 
+    [Conditional("DEBUG")]
+    private static void DebugView(string action, string phrase)
+    {
+        Console.WriteLine($"{action} - {phrase}");
+    }
+
     private static readonly string _inputDetails = "InputValue: [{0}:{1}]";
     private static readonly string _nodeDetails = "Node: [Key:{0}, Replacement:{1}]";
 
@@ -164,6 +171,9 @@ public sealed class AhoCorasickStringReplace : IStringReplace
     private static void DebugView(string action, params object[] args)
     {
         Console.WriteLine($"{action} - {_inputDetails}", args[0], args[1]);
-        Console.WriteLine($"{action} - {_nodeDetails}", args[2], args[3]);
+        if (args[3] != null)
+        {
+            Console.WriteLine($"{action} - {_nodeDetails}", args[2], args[3]);
+        }
     }
 }
